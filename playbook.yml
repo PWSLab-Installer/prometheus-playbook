@@ -1,0 +1,28 @@
+- hosts: localhost
+  connection: local
+
+  vars:
+    
+
+  tasks:
+      
+    - name: Install Role Prometheus
+      local_action: command ansible-galaxy install -f cloudalchemy.prometheus
+
+
+    - name: Check if Prometheus is already installed
+      stat: path=/usr/local/bin/prometheus
+      register: prom_exists
+
+
+    - name: Applying role Prometheus 
+      command: mv ~/.ansible/roles/cloudalchemy.prometheus ~/.ansible/roles/pwslab.prometheus
+      when: not prom_exists.stat.exists
+      ignore_errors: yes
+
+    - name: Installing Prometheus
+      include_role:
+          name: pwslab.prometheus
+      when: not prom_exists.stat.exists
+
+    
